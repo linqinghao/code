@@ -2,7 +2,7 @@ function meowDecorator(msg) {
   return function(target, key, descriptor) {
     const method = descriptor.value
     descriptor.value = function(args) {
-      const ret = method.apply(target, args)
+      const ret = method.apply(this, args)
       console.log(msg)
       return ret
     }
