@@ -1,7 +1,14 @@
+function flyDecorator(target) {
+  target.prototype.fly = function() {
+    console.log('i can fly~')
+  }
+  return target
+}
+
 function meowDecorator(msg) {
   return function(target, key, descriptor) {
     const method = descriptor.value
-    descriptor.value = function(args) {
+    descriptor.value = function(...args) {
       const ret = method.apply(this, args)
       console.log(msg)
       return ret
@@ -10,9 +17,11 @@ function meowDecorator(msg) {
   }
 }
 
+@flyDecorator
 class Cat {
   constructor(name) {
     this.name = name
+    this.meow()
   }
 
   @meowDecorator('ao uuu~~~')
@@ -21,4 +30,4 @@ class Cat {
   }
 }
 const kittyCat = new Cat('kitty')
-kittyCat.meow()
+kittyCat.fly()

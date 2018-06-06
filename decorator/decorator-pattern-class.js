@@ -6,10 +6,8 @@ class Cat {
 
 class Bell {
   constructor(cat) {
-    this.cat = cat
     console.log('ding ding ding')
   }
 }
 
-const cat = new Cat('kitty')
-const kittyCat = new Bell(cat)
+const kittyCat = new Bell(new Cat('kitty'))
