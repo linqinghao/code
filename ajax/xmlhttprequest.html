@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>xmlhttprequest</title>
+    <meta name="description" content="xmlhttprequest">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <script src="./ajax.js"></script>
+    <script>
+
+      ajax.get('https://jsonplaceholder.typicode.com/todos/1', {
+        responseType: 'json'
+      }).then(res => {
+        console.log(res);
+        
+      }).catch(err => {
+        console.error(err);
+      });
+    </script>
+  </body>
+</html>
+
