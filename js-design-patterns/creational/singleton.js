@@ -7,7 +7,7 @@ function Person(age) {
   this.age = age
 }
 
-let createSingleton = (function () {
+let Singleton = (function () {
   let instance
   return function(age) {
     if (!instance) {
@@ -18,9 +18,9 @@ let createSingleton = (function () {
 })()
 
 // TEST
-let person1 = new createSingleton(18)
+let person1 = new Singleton(18)
 
-let person2 = new createSingleton(19)
+let person2 = new Singleton(19)
 
 console.log(person1) // Person { age: 18 }
 console.log(person2) // Person { age: 18 }

@@ -1,7 +1,7 @@
 /**
- * 工厂模式
- * @param {string} type 类型
+ * 简单工厂模式
  * 根据手机产商类型生产不同品牌的手机
+ * @param {string} type 类型
  */
 
 function mobileFactory(type) {

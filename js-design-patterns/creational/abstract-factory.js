@@ -2,11 +2,20 @@
  * 抽象工厂模式
  */
 
-function AbstractProduct() {
-  this.productName = null;
-  this.type = null;
+function MobileAbstractFactory(moblieName, price) {
+  this.moblieName = moblieName
+  this.price = price
+  if (new.target == MobileAbstractFactory) {
+    throw new Error("you're not instantiated abstract class")
+  }
 }
 
-AbstractProduct.prototype.call = function() {
-  return new Error('you\'re not call abstract method')
+
+
+function XiaomiFactory(moblieName, name, model) {
+  MobileAbstractFactory.call(this, moblieName, price)
+}
+
+function MeizuFactory(moblieName, name) {
+  MobileAbstractFactory.call(this, moblieName, price)
 }
