@@ -1,30 +1,39 @@
 /**
  * 简单工厂模式
- * 根据手机产商类型生产不同品牌的手机
- * @param {string} type 类型
  */
 
-function mobileFactory(type) {
-  if (type == 'Xiaomi') {
-    return new Mobile(type, 3000)
-  }
-
-  if (type == 'Meizu') {
-    return new Mobile(type, 1000)
+class Apple {
+  constructor(label, price) {
+    this.label = label
+    this.price = price
   }
 }
 
-function Mobile(type, price) {
-  this.type = type
-  this.price = price
+class Xiaomi {
+  constructor(label, price) {
+    this.label = label
+    this.price = price
+  }
 }
 
-// TEST
+class MobileFactory {
+  create(type) {
+    if (type == 'Apple') {
+      return new Apple(type, 3000)
+    }
 
-let xiaomi = new mobileFactory('Xiaomi')
+    if (type == 'Xiaomi') {
+      return new Xiaomi(type, 1000)
+    }
+  }
+}
 
-console.log(xiaomi) // Mobile { type: 'Xiaomi', price: 3000 }
+let mobileFactory = new MobileFactory()
 
-let meizu = new mobileFactory('Meizu')
+let apple = mobileFactory.create('Apple')
 
-console.log(meizu) // Mobile { type: 'Meizu', price: 1000 }
+console.log(apple) // Apple { label: 'Apple', price: 3000 }
+
+let xiaomi = mobileFactory.create('Xiaomi')
+
+console.log(xiaomi) // Xiaomi { label: 'Xiaomi', price: 1000 }

@@ -4,12 +4,26 @@
 
 let animal = {
   say: function() {
-    console.log('say')
+    console.log('i am animal')
   },
 }
 
-let person = Object.create(animal)
+let person1 = Object.create(animal)
 
-// TEST
+person1.say() // i am animal
 
-person.say() // say
+/**
+ * class
+ */
+
+class Animal {
+  say() {
+    console.log('i am animal')
+  }
+}
+
+class Person extends Animal {}
+
+let person2 = new Person()
+
+person2.say() // i am animal

@@ -1,27 +1,24 @@
 /**
  * 单例模式
- * 使用闭包返回唯一化实例
  */
 
-function Person(age) {
-  this.age = age
+class Singleton {
+  constructor(type) {
+    if (Singleton.instance) {
+      return Singleton.instance
+    }
+    this.type = type
+    Singleton.instance = this
+    return this
+  }
+
+  getType() {
+    console.log(this.type)
+  }
 }
 
-let Singleton = (function () {
-  let instance
-  return function(age) {
-    if (!instance) {
-      instance = new Person(age)
-    }
-    return instance
-  }
-})()
+let s1 = new Singleton('apple')
+s1.getType() // apple
 
-// TEST
-let person1 = new Singleton(18)
-
-let person2 = new Singleton(19)
-
-console.log(person1) // Person { age: 18 }
-console.log(person2) // Person { age: 18 }
-console.log(person1 == person2) // true
+let s2 = new Singleton('banana')
+s2.getType() // apple
