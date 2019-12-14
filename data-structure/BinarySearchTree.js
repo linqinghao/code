@@ -1,20 +1,13 @@
 /**
  * 二叉搜索树
- * 
+ *
  * insert(key)：向树中插入一个新的键。
-
  * search(key)：在树中查找一个键，如果节点存在，则返回true；如果不存在，则返回false。
- * 
  * inOrderTraverse：通过中序遍历方式遍历所有节点。
- * 
  * preOrderTraverse：通过先序遍历方式遍历所有节点。
- * 
  * postOrderTraverse：通过后序遍历方式遍历所有节点。
- * 
  * min：返回树中最小的值/键。
- * 
  * max：返回树中最大的值/键。
- * 
  * remove(key)：从树中移除某个键。
  */
 
@@ -167,17 +160,11 @@ class BinarySearchTree {
 const tree = new BinarySearchTree()
 
 tree.insert(10)
-
 tree.insert(9)
-
 tree.insert(6)
-
 tree.insert(2)
-
 tree.insert(11)
-
 tree.insert(20)
-
 tree.insert(41)
 
 tree.inOrderTraverse(console.log)

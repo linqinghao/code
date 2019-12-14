@@ -1,5 +1,5 @@
 /**
- * 双向链表
+ * 单链表
  *
  * append(element)：尾部添加元素。
  * insert(position, element)：特定位置插入一个新的项。
@@ -18,70 +18,33 @@
 class Node {
   constructor(element) {
     this.element = element
-    this.prev = null
     this.next = null
   }
 }
 
-class DoublyLinkedList {
+class LinkedList {
   constructor() {
-    this.head = null
-    this.tail = null
+    // 链表长度
     this.length = 0
+    this.head = null
   }
 
   append(element) {
     let node = new Node(element)
-    let current = this.tail
-    if (current === null) {
+    let current
+    if (this.head === null) {
       this.head = node
     } else {
+      current = this.head
+      while (current.next !== null) {
+        current = current.next
+      }
       current.next = node
-      node.prev = current
     }
-    this.tail = node
     this.length++
   }
 
-  insert(position, element) {
-    if (position < 0 || position > this.length) {
-      return false
-    } else {
-      let node = new Node(element)
-      let current = this.head
-      let previous
-      let index = 0
-      // 首位
-      if (position == 0) {
-        if (!this.head) {
-          this.head = node
-          this.tail = node
-        } else {
-          node.next = current
-          current.prev = node
-          this.head = node
-          this.tail = current
-        }
-      } else if (position == this.length) {
-        // 末位
-        this.append(element)
-      } else {
-        // 中位
-        while (index++ < position) {
-          previous = current
-          current = current.next
-        }
-        previous.next = node
-        node.next = current
-        node.prev = previous
-        current.prev = node
-      }
-      this.length++
-      return true
-    }
-  }
-
-  getElementAt(position) {
+  getElementAt(postion) {
     if (this.isEmpty() || postion < 0 || postion > this.length) {
       return undefined
     } else {
@@ -93,6 +56,31 @@ class DoublyLinkedList {
     }
   }
 
+  insert(position, element) {
+    if (position < 0 || position > this.length) {
+      return false
+    } else {
+      let node = new Node(element)
+      let current = this.head
+      let previous
+      let index = 0
+
+      if (position == 0) {
+        node.next = current
+        this.head = node
+      } else {
+        while (index++ < position) {
+          previous = current
+          current = current.next
+        }
+        previous.next = node
+        node.next = current
+      }
+      this.length++
+      return true
+    }
+  }
+
   removeAt(position) {
     if (this.isEmpty() || position < 0 || position > this.length) {
       return false
@@ -100,31 +88,15 @@ class DoublyLinkedList {
       let current = this.head
       let previous
       let index = 0
+
       if (position == 0) {
-        if (this.length == 1) {
-          this.head = null
-          this.tail = null
-        } else {
-          this.head = current.next
-          this.head.prev = null
-        }
-      } else if (position == this.length - 1) {
-        if (this.length == 1) {
-          this.head = null
-          this.tail = null
-        } else {
-          current = this.tail
-          this.tail = current.prev
-          this.tail.next = null
-        }
+        this.head = current.next
       } else {
         while (index++ < position) {
           previous = current
           current = current.next
         }
         previous.next = current.next
-        current.next.prev = previous
-        previous = current.next.prev
       }
       this.length--
       return true
@@ -139,7 +111,7 @@ class DoublyLinkedList {
   indexOf(element) {
     let current = this.head
     let index = 0
-    while (current.next) {
+    while (current) {
       if (current.element == element) {
         return index
       }
@@ -150,7 +122,7 @@ class DoublyLinkedList {
   }
 
   isEmpty() {
-    return this.length == 0
+    return this.length === 0
   }
 
   size() {
@@ -159,16 +131,11 @@ class DoublyLinkedList {
 
   clear() {
     this.head = null
-    this.tail = null
     this.hength = 0
   }
 
   getHead() {
     return this.head
-  }
-
-  getTail() {
-    return this.tail
   }
 
   toString() {
@@ -186,20 +153,25 @@ class DoublyLinkedList {
   }
 }
 
-let doublyLinkedList = new DoublyLinkedList()
+module.exports = LinkedList
 
-console.log(doublyLinkedList.isEmpty())
-doublyLinkedList.append(1)
-doublyLinkedList.append(2)
-doublyLinkedList.append(3)
-console.log(doublyLinkedList.size())
+let linkList = new LinkedList()
 
-doublyLinkedList.insert(1, 4)
+console.log(linkList.removeAt(0)) // false
+console.log(linkList.isEmpty()) // true
 
-doublyLinkedList.print()
+linkList.append('Alin')
 
-doublyLinkedList.remove(2)
+linkList.append('Banana')
 
-doublyLinkedList.print()
+linkList.append('Coral')
 
-doublyLinkedList.getHead()
+linkList.print() // Alin,Banana,Coral
+
+linkList.insert(1, 'Zoz')
+
+linkList.print() // Alin,Zoz,Banana,Coral
+
+linkList.clear()
+
+linkList.print()
