@@ -10,6 +10,7 @@
       body {
         margin: 0;
         padding: 0;
+        height: 100%;
       }
       header,
       section,
@@ -18,27 +19,27 @@
         font-size: 24px;
         line-height: 50px;
       }
+
       .main {
-        position: relative;
-        min-height: 100%;
-        padding-bottom: 50px;
+        height: 100%;
         background-color: #eee;
       }
-      section {
-        height: 400px;
+      .content {
+        min-height: calc(100vh - 100px);
       }
+
       footer {
         width: 100%;
-        position: absolute;
-        bottom: 0;
-        height: 50px;
+        height: 100px;
         background-color: #666;
       }
     </style>
   </head>
   <body>
     <div class="main">
-      <section>Content</section>
+      <section class="content">
+        Content
+      </section>
       <footer>Footer</footer>
     </div>
   </body>

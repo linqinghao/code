@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Sticky-footer</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+      header,
+      section,
+      footer {
+        text-align: center;
+        font-size: 24px;
+        line-height: 50px;
+      }
+      .main {
+        position: relative;
+        min-height: 100%;
+        background-color: #eee;
+      }
+
+      footer {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        height: 100px;
+        background-color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <section class="content">
+        Content
+      </section>
+      <footer>Footer</footer>
+    </div>
+  </body>
+</html>
