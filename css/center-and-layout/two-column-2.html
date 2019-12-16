@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>两列布局-2</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      header,
+      aside,
+      section,
+      footer {
+        text-align: center;
+        font-size: 24px;
+        line-height: 100px;
+      }
+      header {
+        height: 100px;
+        text-align: center;
+        background-color: #eee;
+      }
+      .content {
+        max-width: 1140px;
+        min-height: 600px;
+        margin: 0 auto;
+        position: relative;
+      }
+      aside {
+        width: 300px;
+        min-height: 300px;
+        position: absolute;
+        left: 0;
+        background: #a98dff;
+      }
+      section {
+        width: 800px;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        background-color: #36d8c2;
+      }
+      footer {
+        height: 200px;
+        background-color: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Header</header>
+    <div class="content">
+      <aside>Aside</aside>
+      <section>Content</section>
+    </div>
+    <footer>Footer</footer>
+  </body>
+</html>

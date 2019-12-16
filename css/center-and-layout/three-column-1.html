@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>三列布局-圣杯布局</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      header,
+      aside,
+      section,
+      footer {
+        text-align: center;
+        font-size: 24px;
+        line-height: 100px;
+      }
+      header {
+        height: 100px;
+        text-align: center;
+        background-color: #eee;
+      }
+      .content {
+        height: 600px;
+        margin: 0 auto;
+        position: relative;
+        padding: 0 300px 0 300px;
+        overflow: hidden;
+      }
+      section {
+        width: 100%;
+        height: 100%;
+        float: left;
+        background-color: #36d8c2;
+      }
+      aside {
+        width: 300px;
+        min-height: 300px;
+        background: #a98dff;
+        float: left;
+      }
+      .left-aside {
+        margin-left: -100%;
+        position: relative;
+        left: -300px;
+      }
+      .right-aside {
+        margin-left: -300px;
+        position: relative;
+        right: -300px;
+      }
+      footer {
+        height: 200px;
+        background-color: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Header</header>
+    <div class="content">
+      <section>Content</section>
+      <aside class="left-aside">Left Aside</aside>
+      <aside class="right-aside">Right Aside</aside>
+    </div>
+    <footer>Footer</footer>
+  </body>
+</html>
+
