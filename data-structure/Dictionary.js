@@ -38,7 +38,7 @@ class Dictionary {
   }
 
   get(key) {
-    return this.hasKey[key] ? this.dict[key] : undefined
+    return this.hasKey(key) ? this.dict[key] : undefined
   }
 
   clear() {
@@ -62,13 +62,4 @@ class Dictionary {
   }
 }
 
-let dict = new Dictionary()
-
-dict.set('name', 'alin')
-dict.set('gender', 'male')
-dict.set('nation', 'china')
-
-dict.print() // [ [ 'name', 'alin' ], [ 'gender', 'male' ], [ 'nation', 'china' ] ]
-dict.remove('gender')
-console.log(dict.hasKey('gender')) // true
-console.log(dict.size()) // 2
+module.exports = Dictionary;
