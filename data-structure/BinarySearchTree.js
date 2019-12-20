@@ -6,10 +6,18 @@
  * inOrderTraverse：通过中序遍历方式遍历所有节点。
  * preOrderTraverse：通过先序遍历方式遍历所有节点。
  * postOrderTraverse：通过后序遍历方式遍历所有节点。
+ * inOrderTraverseNoRecursion：通过中序遍历方式遍历所有节点（非递归）。
+ * preOrderTraverseNoRecursion：通过先序遍历方式遍历所有节点（非递归）。
+ * postOrderTraverseNoRecursion：通过后序遍历方式遍历所有节点（非递归）。
+ * breadthFirstSearch: 广度优先遍历（递归）。
+ * breadthFirstSearchNoRecursion: 广度优先遍历（非递归）。
  * min：返回树中最小的值/键。
  * max：返回树中最大的值/键。
  * remove(key)：从树中移除某个键。
  */
+
+const Stack = require('./Stack')
+const Queue = require('./Queue')
 
 class Node {
   constructor(key) {
@@ -70,6 +78,101 @@ class BinarySearchTree {
 
   postOrderTraverse(cb) {
     this._postOrderTraverseNode(this.root, cb)
+  }
+
+  inOrderTraverseNoRecursion(cb, node) {
+    node = node || this.root
+    let stack = new Stack()
+    stack.push(node)
+    while (!stack.isEmpty()) {
+      // 左节点先入栈
+      if (node.left && !node.touched) {
+        node.touched = true
+        node = node.left
+        stack.push(node)
+        continue
+      }
+      node.touched && delete node.touched
+      node = stack.pop()
+      cb && cb(node.key)
+      node.right && stack.push(node.right)
+    }
+  }
+
+  preOrderTraverseNoRecursion(cb, node) {
+    node = node || this.root
+    let stack = new Stack()
+    stack.push(node)
+    while (!stack.isEmpty()) {
+      node = stack.pop()
+      cb && cb(node.key)
+      // 右节点先入栈
+      node.right && stack.push(node.right)
+      node.left && stack.push(node.left)
+    }
+  }
+
+  postOrderTraverseNoRecursion(cb, node) {
+    node = node || this.root
+    let stack = new Stack()
+    stack.push(node)
+
+    while (!stack.isEmpty()) {
+      // 左节点先入栈
+      if (node.left && !node.touched) {
+        node.touched = 'left'
+        node = node.left
+        stack.push(node)
+        continue
+      }
+
+      // 有右节点并且未访问则入栈
+      if (node.right && node.touched !== 'right') {
+        node.touched = 'right'
+        node = node.right
+        stack.push(node)
+        continue
+      }
+
+      let item = stack.pop()
+
+      item.touched && delete item.touched
+
+      cb && cb(item.key)
+
+      // 指向栈顶的节点
+      node = stack.peek()
+    }
+  }
+
+  // 广度优先遍历（非递归）
+  breadthFirstSearchNoRecursion(cb, node) {
+    node = node || this.root
+    let queue = new Queue()
+    queue.enqueue(node)
+    let pointer = 0
+    while (pointer < queue.size()) {
+      let item = queue.list[pointer++]
+      cb && cb(item.key)
+      item.left && queue.enqueue(item.left)
+      item.right && queue.enqueue(item.right)
+    }
+  }
+
+  // 广度优先遍历（递归）
+  breadthFirstSearch(cb, node) {
+    node = node || this.root
+    let queue = new Queue()
+    queue.enqueue(node)
+    bfs(cb)
+    function bfs(cb) {
+      if (queue.isEmpty()) return
+      let item = queue.dequeue()
+      cb && cb(item.key)
+      item.left && queue.enqueue(item.left)
+      item.right && queue.enqueue(item.right)
+      bfs(cb)
+    }
   }
 
   _preOrderTraverseNode(node, cb) {

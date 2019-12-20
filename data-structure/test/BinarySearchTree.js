@@ -10,4 +10,14 @@ tree.insert(11)
 tree.insert(20)
 tree.insert(41)
 
-tree.inOrderTraverse(console.log)
+// tree.inOrderTraverse(console.log)
+
+// tree.inOrderTraverseNoRecursion(console.log)
+
+// tree.preOrderTraverseNoRecursion(console.log)
+
+// tree.postOrderTraverseNoRecursion(console.log)
+
+// tree.breadthFirstSearch(console.log)
+
+// tree.breadthFirstSearchNoRecursion(console.log)
