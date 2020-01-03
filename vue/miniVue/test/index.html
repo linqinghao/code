@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MiniVue</title>
+  </head>
+  <style>
+    #app {
+      text-align: center;
+    }
+  </style>
+  <body>
+    <div id="app">
+      <h2>{{title}}</h2>
+      <h1>{{name}}</h1>
+    </div>
+  </body>
+  <script src="../observer.js"></script>
+  <script src="../watcher.js"></script>
+  <script src="../compile.js"></script>
+  <script src="../index.js"></script>
+
+  <script type="text/javascript">
+    let vm = new MiniVue({
+      el: '#app',
+      data: {
+        title: 'Hello world',
+        name: 'Vue',
+      },
+    })
+    setTimeout(function() {
+      vm.name = 'haha'
+    }, 2000)
+  </script>
+</html>
