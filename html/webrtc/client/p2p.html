@@ -168,9 +168,9 @@
           message.log('候选人收集完成！')
         }
       }
+      let stream = null
       async function start(offerSdp) {
         target === 'offer' && (button.style.display = 'none')
-        let stream
         try {
           message.log('尝试调取本地摄像头/麦克风')
           stream = await navigator.mediaDevices.getUserMedia({
@@ -214,6 +214,7 @@
         if (peer) {
           peer.close()
           peer = null
+          stream.getTracks()[0].stop()
         }
       }
     </script>
