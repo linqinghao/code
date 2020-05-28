@@ -1,0 +1,8 @@
+total 0
+drwxr-xr-x  970 root  wheel    30K  3  4 00:17 bin
+drwxr-xr-x  307 root  wheel   9.6K  3  4 00:17 lib
+drwxr-xr-x  249 root  wheel   7.8K  3  4 00:17 libexec
+drwxr-xr-x   15 root  wheel   480B  3 14 21:05 local
+drwxr-xr-x  239 root  wheel   7.5K  3  4 00:17 sbin
+drwxr-xr-x   46 root  wheel   1.4K  3  2  2019 share
+drwxr-xr-x    5 root  wheel   160B 10 24  2018 standalone
