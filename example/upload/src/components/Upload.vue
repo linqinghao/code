@@ -5,6 +5,10 @@
       上传
       <i class="el-icon-upload el-icon--right"></i>
     </el-button>
+    <div>
+      <div>总进度</div>
+      <el-progress :percentage="uploadPercentage"></el-progress>
+    </div>
     <el-table :data="data">
       <el-table-column label="切片hash" align="center" prop="hash"></el-table-column>
       <el-table-column label="大小（KB）" align="center" width="120">
