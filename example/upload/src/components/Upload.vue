@@ -37,8 +37,6 @@ export default {
         }
       })
       await this.uploadChunks()
-      // 合并切片
-      await this.mergeRequest()
     },
     // 生成文件切片
     createFileChunk(file, size = SIZE) {
@@ -61,12 +59,14 @@ export default {
           return { formData }
         })
         .map(async ({ formData }) => {
-          request({
+          await request({
             url: 'http://localhost:3000/uploadSlice',
             data: formData,
           })
         })
       await Promise.all(requestList)
+
+      await this.mergeRequest()
     },
     async mergeRequest() {
       await request({
