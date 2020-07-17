@@ -6,6 +6,8 @@
       <i class="el-icon-upload el-icon--right"></i>
     </el-button>
     <div>
+      <div>计算文件 hash</div>
+      <el-progress :percentage="hashPercentage"></el-progress>
       <div>总进度</div>
       <el-progress :percentage="uploadPercentage"></el-progress>
     </div>
@@ -41,6 +43,9 @@ export default {
       },
       // 切片数据
       data: [],
+      worker: null,
+      hash: null,
+      hashPercentage: 0,
     }
   },
   computed: {
@@ -61,13 +66,15 @@ export default {
     async handleUpload() {
       if (!this.container.file) return
       const fileChunkList = this.createFileChunk(this.container.file)
+      this.container.hash = await this.calculateHash(fileChunkList)
       this.data = fileChunkList.map(({ file }, index) => {
         return {
+          fileHash: this.container.hash,
           chunk: file,
           index,
           size: file.size,
           percentage: 0,
-          hash: this.container.file.name + '-' + index,
+          hash: this.container.hash + '-' + index,
         }
       })
       await this.uploadChunks()
@@ -92,6 +99,7 @@ export default {
           formData.append('chunk', chunk)
           formData.append('hash', hash)
           formData.append('fileName', this.container.file.name)
+          formData.append('fileHash', this.container.hash);
           return { formData, index }
         })
         .map(async ({ formData, index }) => {
@@ -111,6 +119,7 @@ export default {
         },
         data: JSON.stringify({
           fileName: this.container.file.name,
+          fileHash: this.container.hash,
           size: SIZE,
         }),
       })
@@ -119,6 +128,17 @@ export default {
       return e => {
         item.percentage = parseInt(String((e.loaded / e.total) * 100))
       }
+    },
+    calculateHash(fileChunkList) {
+      return new Promise(resolve => {
+        this.container.worker = new Worker('/hash.js')
+        this.container.worker.postMessage({ fileChunkList })
+        this.container.worker.onmessage = e => {
+          const { percentage, hash } = e.data
+          this.hashPercentage = percentage
+          if (hash) resolve(hash)
+        }
+      })
     },
   },
 }

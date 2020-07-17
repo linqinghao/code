@@ -3,6 +3,9 @@ const multiparty = require('multiparty')
 const fse = require('fs-extra')
 const UPLOAD_DIR = path.resolve(__dirname, 'static') // 文件存储目录
 
+const extractExt = filename =>
+  filename.slice(filename.lastIndexOf('.'), filename.length)
+
 const resolveRes = req => {
   return new Promise(resolve => {
     let chunk = ''
@@ -26,8 +29,8 @@ const pipeStream = (path, writeStream) => {
   })
 }
 
-const mergeFileChunk = async (filePath, fileName, size) => {
-  const chunkDir = path.resolve(UPLOAD_DIR, fileName)
+const mergeFileChunk = async (filePath, fileHash, size) => {
+  const chunkDir = path.resolve(UPLOAD_DIR, fileHash)
   const chunkPaths = await fse.readdir(chunkDir)
   console.log('chunkPaths:', chunkPaths)
   chunkPaths.sort((a, b) => a.split('-')[1] - b.split('-')[1])
@@ -60,7 +63,12 @@ module.exports = {
       const [chunk] = files.chunk
       const [hash] = fields.hash
       const [fileName] = fields.fileName
-      const chunkDir = path.resolve(UPLOAD_DIR, fileName)
+      const [fileHash] = fields.fileHash
+      const chunkDir = path.resolve(UPLOAD_DIR, fileHash)
+      const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${extractExt(fileName)}`);
+      if (fse.existsSync(filePath)) {
+        return res.end('file exist');
+      }
       if (!fse.existsSync(chunkDir)) {
         await fse.mkdirs(chunkDir)
       }
@@ -71,10 +79,11 @@ module.exports = {
   },
   async mergeSlice(req, res) {
     let data = await resolveRes(req)
-    const { fileName, size } = data
-    const filePath = path.resolve(UPLOAD_DIR, `merge-${fileName}`)
+    const { fileName, size, fileHash } = data
+    const ext = extractExt(fileName);
+    const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${ext}`)
     try {
-      await mergeFileChunk(filePath, fileName, size)
+      await mergeFileChunk(filePath, fileHash, size)
       res.end(JSON.stringify({ code: '0', msg: 'merge success!' }))
     } catch (err) {
       console.log(err.message)
