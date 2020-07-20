@@ -51,6 +51,15 @@ const mergeFileChunk = async (filePath, fileHash, size) => {
   fse.rmdirSync(chunkDir) // 合并后删除保存切片的目录
 }
 
+const createUploadedList = async fileHash => {
+  const chunkDir = path.resolve(UPLOAD_DIR, fileHash)
+  if (fse.existsSync(chunkDir)) {
+    return await fse.readdir(chunkDir)
+  } else {
+    return []
+  }
+}
+
 module.exports = {
   async handleUploadSlice(req, res) {
     const mult = new multiparty.Form()
@@ -110,6 +119,7 @@ module.exports = {
       res.end(
         JSON.stringify({
           shouldUpload: true,
+          uploadedList: await createUploadedList(fileHash)
         })
       )
     }

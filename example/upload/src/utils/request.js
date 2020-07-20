@@ -4,9 +4,9 @@ exports.request = function({
   data,
   headers = {},
   onProgress = e => e,
-  // requestList,
+  requestList,
 }) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const xhr = new XMLHttpRequest()
     xhr.upload.onprogress = onProgress
     xhr.open(method, url)
@@ -15,10 +15,14 @@ exports.request = function({
     })
     xhr.send(data)
     xhr.onload = e => {
-      console.log(e);
+      if (requestList) {
+        const xhrIndex = requestList.findIndex(i => i == xhr)
+        requestList.splice(xhrIndex, 1)
+      }
       resolve({
         data: e.target.response,
       })
     }
+    requestList?.push(xhr)
   })
 }

@@ -1,15 +1,17 @@
 <template>
   <div>
     <input type="file" @change="handleFileChange" />
-    <el-button type="primary" @click="handleUpload">
+    <el-button type="primary" @click="handleUpload" :disabled="uploadDisabled">
       上传
       <i class="el-icon-upload el-icon--right"></i>
     </el-button>
+    <el-button @click="handleResume" v-if="status === Status.pause">恢复</el-button>
+    <el-button type="primary" @click="handlePause" v-else :disabled="status != Status.uploading || !container.hash">暂停</el-button>
     <div>
       <div>计算文件 hash</div>
       <el-progress :percentage="hashPercentage"></el-progress>
       <div>总进度</div>
-      <el-progress :percentage="uploadPercentage"></el-progress>
+      <el-progress :percentage="fakeUploadPercentage"></el-progress>
     </div>
     <el-table :data="data">
       <el-table-column label="切片hash" align="center" prop="hash"></el-table-column>
@@ -28,7 +30,11 @@
 <script>
 import { request } from '../utils/request'
 const SIZE = 10 * 1024 * 1024 // 切片大小
-
+const Status = {
+  wait: "wait",
+  pause: "pause",
+  uploading: "uploading"
+};
 export default {
   filters: {
     transformByte(val) {
@@ -37,6 +43,7 @@ export default {
   },
   data() {
     return {
+      Status,
       // 上传的文件
       container: {
         file: null,
@@ -45,10 +52,19 @@ export default {
       data: [],
       worker: null,
       hash: null,
+      requestList: [],
       hashPercentage: 0,
+      fakeUploadPercentage: 0,
+      status: Status.wait,
     }
   },
   computed: {
+    uploadDisabled() {
+      return (
+        !this.container.file ||
+        [Status.pause, Status.uploading].includes(this.status)
+      );
+    },
     uploadPercentage() {
       if (!this.container.file || !this.data.length) return 0
       const loaded = this.data
@@ -56,6 +72,13 @@ export default {
         .reduce((acc, cur) => acc + cur)
       return parseInt((loaded / this.container.file.size).toFixed(2))
     },
+  },
+  watch: {
+    uploadPercentage(now) {
+      if (now > this.fakeUploadPercentage) {
+        this.fakeUploadPercentage = now
+      }
+    }
   },
   methods: {
     handleFileChange(e) {
@@ -65,30 +88,41 @@ export default {
     },
     async handleUpload() {
       if (!this.container.file) return
+      this.status = Status.uploading
       const fileChunkList = this.createFileChunk(this.container.file)
       this.container.hash = await this.calculateHash(fileChunkList)
 
-      const { shouldUpload } = await this.verifyUpload(
+      const { shouldUpload, uploadedList } = await this.verifyUpload(
         this.container.file.name,
         this.container.hash
       )
       if (!shouldUpload) {
         this.$message.success('秒传成功')
+        this.status = Status.wait
         return
       }
+      console.log('uploadedList', uploadedList);
       this.data = fileChunkList.map(({ file }, index) => {
         return {
           fileHash: this.container.hash,
           chunk: file,
           index,
           size: file.size,
-          percentage: 0,
+          percentage: uploadedList.includes(this.container.hash + '-' + index) ? 100 : 0,
           hash: this.container.hash + '-' + index,
         }
       })
-      await this.uploadChunks()
-      // 合并切片
-      await this.mergeRequest()
+      await this.uploadChunks(uploadedList)
+    },
+    handlePause() {
+      this.status = Status.pause
+      this.requestList.forEach(xhr => xhr?.abort())
+      this.requestList = []
+    },
+    async handleResume() {
+      this.status = Status.uploading
+      const { uploadedList } = await this.verifyUpload(this.container.file.name, this.container.hash)
+      await this.uploadChunks(uploadedList);
     },
     // 生成文件切片
     createFileChunk(file, size = SIZE) {
@@ -101,8 +135,9 @@ export default {
       return fileChunkList
     },
     // 上传切片
-    async uploadChunks() {
+    async uploadChunks(uploadedList = []) {
       const requestList = this.data
+        .filter(({hash}) => !uploadedList.includes(hash))
         .map(({ chunk, hash, index }) => {
           const formData = new FormData()
           formData.append('chunk', chunk)
@@ -116,9 +151,14 @@ export default {
             url: 'http://localhost:3000/uploadSlice',
             data: formData,
             onProgress: this.createProgressHandle(this.data[index]),
+            requestList: this.requestList,
           })
         })
       await Promise.all(requestList)
+      if (uploadedList.length + requestList.length == this.data.length) {
+        // 合并切片
+        await this.mergeRequest()
+      }
     },
     async mergeRequest() {
       await request({
@@ -132,6 +172,8 @@ export default {
           size: SIZE,
         }),
       })
+      this.$message.success('上传成功')
+      this.status = Status.wait
     },
     createProgressHandle(item) {
       return e => {
