@@ -1,6 +1,8 @@
 const path = require('path')
 const multiparty = require('multiparty')
 const fse = require('fs-extra')
+const { verify } = require('crypto')
+const { strict } = require('assert')
 const UPLOAD_DIR = path.resolve(__dirname, 'static') // 文件存储目录
 
 const extractExt = filename =>
@@ -65,9 +67,12 @@ module.exports = {
       const [fileName] = fields.fileName
       const [fileHash] = fields.fileHash
       const chunkDir = path.resolve(UPLOAD_DIR, fileHash)
-      const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${extractExt(fileName)}`);
+      const filePath = path.resolve(
+        UPLOAD_DIR,
+        `${fileHash}${extractExt(fileName)}`
+      )
       if (fse.existsSync(filePath)) {
-        return res.end('file exist');
+        return res.end('file exist')
       }
       if (!fse.existsSync(chunkDir)) {
         await fse.mkdirs(chunkDir)
@@ -80,7 +85,7 @@ module.exports = {
   async mergeSlice(req, res) {
     let data = await resolveRes(req)
     const { fileName, size, fileHash } = data
-    const ext = extractExt(fileName);
+    const ext = extractExt(fileName)
     const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${ext}`)
     try {
       await mergeFileChunk(filePath, fileHash, size)
@@ -88,6 +93,25 @@ module.exports = {
     } catch (err) {
       console.log(err.message)
       res.end(JSON.stringify({ code: '1', msg: 'merge fail!' }))
+    }
+  },
+  async verifyUpload(req, res) {
+    const data = await resolveRes(req)
+    const { fileName, fileHash } = data
+    const ext = extractExt(fileName)
+    const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${ext}`)
+    if (fse.existsSync(filePath)) {
+      res.end(
+        JSON.stringify({
+          shouldUpload: false,
+        })
+      )
+    } else {
+      res.end(
+        JSON.stringify({
+          shouldUpload: true,
+        })
+      )
     }
   },
 }

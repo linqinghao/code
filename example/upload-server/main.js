@@ -20,6 +20,10 @@ server.on('request', async (req, res) => {
   if (req.url === '/mergeSlice') {
     await controller.mergeSlice(req, res)
   }
+
+  if (req.url === '/verify') {
+    await controller.verifyUpload(req, res)
+  }
 })
 
 server.listen(3000, () => console.log('服务正在监听3000端口'))

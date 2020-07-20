@@ -67,6 +67,15 @@ export default {
       if (!this.container.file) return
       const fileChunkList = this.createFileChunk(this.container.file)
       this.container.hash = await this.calculateHash(fileChunkList)
+
+      const { shouldUpload } = await this.verifyUpload(
+        this.container.file.name,
+        this.container.hash
+      )
+      if (!shouldUpload) {
+        this.$message.success('秒传成功')
+        return
+      }
       this.data = fileChunkList.map(({ file }, index) => {
         return {
           fileHash: this.container.hash,
@@ -99,7 +108,7 @@ export default {
           formData.append('chunk', chunk)
           formData.append('hash', hash)
           formData.append('fileName', this.container.file.name)
-          formData.append('fileHash', this.container.hash);
+          formData.append('fileHash', this.container.hash)
           return { formData, index }
         })
         .map(async ({ formData, index }) => {
@@ -139,6 +148,19 @@ export default {
           if (hash) resolve(hash)
         }
       })
+    },
+    async verifyUpload(fileName, fileHash) {
+      const { data } = await request({
+        url: 'http://localhost:3000/verify',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: JSON.stringify({
+          fileName,
+          fileHash,
+        }),
+      })
+      return JSON.parse(data)
     },
   },
 }
