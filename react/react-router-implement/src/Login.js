@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from './myReactRouter/react-router-dom/Link';
 
-function Login() {
+function Login(props) {
   return (
     <>
       <h1>登录页</h1>

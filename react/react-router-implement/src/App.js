@@ -1,9 +1,12 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+// import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Router from './myReactRouter/react-router-dom/BrowserRouter'
+import Route from './myReactRouter/react-router/Route'
+import Switch from './myReactRouter/react-router/Switch'
 import Login from './Login'
 import Home from './Home'
 
-function App() {
+function App(props) {
   return (
     <Router>
       <Switch>

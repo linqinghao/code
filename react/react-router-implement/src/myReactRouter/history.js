@@ -18,7 +18,8 @@ function createBrowserHistory() {
   const listeners = createEvents()
 
   // 路由变化时的回调
-  const handlePop = function () {
+  const handlePop = function (event) {
+    console.log('what????', event)
     listeners.call()
   }
 
@@ -30,6 +31,12 @@ function createBrowserHistory() {
     listen(listener) {
       return listeners.push(listener)
     },
+    push(url) {
+      const history = window.history;
+      console.log(url)
+      history.pushState(null, '', url)
+    },
+    location: window.location
   }
 
   return history
