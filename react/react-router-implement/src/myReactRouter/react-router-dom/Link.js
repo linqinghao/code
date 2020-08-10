@@ -9,7 +9,7 @@ function LinkAnchor({ navigate, ...rest }) {
       navigate()
     },
   }
-  return <a {...props} />
+  return <a {...props}>{props.children}</a>
 }
 
 function Link({ component = LinkAnchor, to, ...rest }) {
