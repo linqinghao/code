@@ -19,8 +19,7 @@ function createBrowserHistory() {
 
   // 路由变化时的回调
   const handlePop = function (event) {
-    console.log('what????', event)
-    listeners.call()
+    listeners.call(window.location)
   }
 
   // 监听路由变化，BrowserHistory 监听 popstate 事件
@@ -32,11 +31,11 @@ function createBrowserHistory() {
       return listeners.push(listener)
     },
     push(url) {
-      const history = window.history;
-      console.log(url)
+      const history = window.history
       history.pushState(null, '', url)
+      listeners.call(window.location)
     },
-    location: window.location
+    location: window.location,
   }
 
   return history
